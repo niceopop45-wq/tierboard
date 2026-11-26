@@ -74,8 +74,12 @@ a{color:var(--acc)}
 .strip{display:flex;flex-direction:column;gap:3px}.strip i{height:8px;border-radius:3px;display:block}
 .card b{font:600 16px Kanit,sans-serif}.card small{color:var(--mute)}
 #home h2{margin:18px 0 4px;font-size:20px}
-.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;z-index:70;box-shadow:var(--shadow)}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;z-index:70;box-shadow:var(--shadow)}
 .insE{box-shadow:4px 0 0 var(--acc)}
+#ed.wrap{padding-bottom:96px}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:15;display:flex;gap:8px;align-items:center;overflow-x:auto;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -4px 16px rgba(0,0,0,.12)}
+.dock>*{flex:none;white-space:nowrap}
+.dock select{width:auto;max-width:42vw}
 </style>
 </head>
 <body>
@@ -86,26 +90,22 @@ a{color:var(--acc)}
   <h2 id="recT"></h2><div class="cards" id="rec"></div>
 </div>
 <div class="wrap" id="ed" hidden>
-  <div class="bar">
+  <input class="title" id="title" type="text" maxlength="80">
+  <div class="board" id="board"></div>
+  <div class="pool"><h2 id="poolT"></h2><div class="drop" id="pool" data-t="pool"></div><div class="hint" id="hint"></div></div>
+  <nav class="dock">
     <button id="back"></button>
     <select id="sel" aria-label="topic"></select>
-    <button id="newL" class="pri"></button>
-    <span class="sp"></span>
-    <button id="lang">EN</button>
-    <button id="theme"></button>
-  </div>
-  <input class="title" id="title" type="text" maxlength="80">
-  <div class="bar">
+    <button id="newL"></button>
     <button id="addI" class="pri"></button>
     <button id="addT"></button>
     <button id="cov"></button>
     <button id="pub" class="pri"></button>
     <button id="unpub" hidden></button>
-    <span class="sp"></span>
+    <button id="lang">EN</button>
+    <button id="theme"></button>
     <button id="delL" class="dng"></button>
-  </div>
-  <div class="board" id="board"></div>
-  <div class="pool"><h2 id="poolT"></h2><div class="drop" id="pool" data-t="pool"></div><div class="hint" id="hint"></div></div>
+  </nav>
 </div>
 <div id="modal"></div>
 <script>
