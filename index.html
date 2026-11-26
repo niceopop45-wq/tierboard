@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tier Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&family=Noto+Sans+Thai:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef0f3;--panel:#fff;--ink:#1a1d23;--mute:#667085;--line:#d5d9e0;--acc:#2f5bea;--accink:#fff;--shadow:0 6px 24px rgba(20,30,60,.14);color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171c;--panel:#1e232b;--ink:#eceff4;--mute:#9aa4b2;--line:#323946;--acc:#7b9bff;--accink:#10131a;--shadow:0 6px 24px rgba(0,0,0,.5);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14171c;--panel:#1e232b;--ink:#eceff4;--mute:#9aa4b2;--line:#323946;--acc:#7b9bff;--accink:#10131a;--shadow:0 6px 24px rgba(0,0,0,.5);color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Noto Sans Thai",system-ui,sans-serif}
+h1,h2,.k{font-family:Kanit,"Noto Sans Thai",sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:14px 12px 60px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.bar .sp{flex:1}
+button,select,input,textarea{font:inherit;color:inherit}
+button{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer}
+button:hover{border-color:var(--acc)}
+button.pri{background:var(--acc);color:var(--accink);border-color:var(--acc);font-weight:500}
+button.dng{color:#d6336c}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+select,input[type=text],input[type=url],textarea{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 10px;width:100%}
+.bar select{width:auto;max-width:48vw}
+.title{width:100%;font:700 clamp(24px,5vw,36px)/1.2 Kanit,sans-serif;background:transparent;border:0;border-bottom:2px dashed var(--line);border-radius:0;padding:6px 0;margin-bottom:12px}
+.board{border:2px solid var(--ink);border-radius:10px;overflow:hidden;background:var(--panel)}
+.row{display:flex;border-bottom:2px solid var(--ink);min-height:84px}
+.row:last-child{border-bottom:0}
+.lab{width:88px;flex:none;display:flex;align-items:center;justify-content:center;text-align:center;font:700 22px/1.1 Kanit,sans-serif;padding:6px;cursor:pointer;word-break:break-word;border:0;border-radius:0}
+.drop{flex:1;display:flex;flex-wrap:wrap;gap:4px;padding:4px;align-content:flex-start;min-height:84px}
+.drop.over{background:color-mix(in srgb,var(--acc) 18%,transparent)}
+.tile{width:76px;height:76px;border-radius:6px;overflow:hidden;position:relative;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;border:1px solid var(--line);background:var(--bg);padding:0;flex:none}
+.tile img{width:100%;height:100%;object-fit:cover;display:block}
+.tile .nm{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.62);color:#fff;font-size:11px;line-height:1.15;padding:2px 3px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .ph{display:flex;width:100%;height:100%;align-items:center;justify-content:center;font:600 12px/1.2 Kanit,sans-serif;padding:4px;text-align:center;word-break:break-word}
+.pool{margin-top:16px;border:2px dashed var(--line);border-radius:10px;padding:4px}
+.pool h2{margin:6px 8px;font-size:16px}
+.hint{color:var(--mute);font-size:13px;margin:6px 8px}
+.ov{position:fixed;inset:0;background:rgba(10,14,22,.6);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:0}
+@media(min-width:640px){.ov{align-items:center;padding:20px}}
+.md{background:var(--panel);width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:16px 16px 0 0;padding:16px;box-shadow:var(--shadow)}
+@media(min-width:640px){.md{border-radius:16px}}
+.md h2{margin:0 0 10px;font-size:22px}
+.f{display:block;margin:10px 0 4px;font-weight:500}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.acts .sp{flex:1}
+.hero{width:100%;max-height:300px;object-fit:contain;border-radius:10px;background:var(--bg)}
+.gal{display:flex;gap:6px;overflow-x:auto;margin:8px 0}
+.gal img{height:96px;border-radius:8px;cursor:zoom-in;flex:none}
+.vid{position:relative;padding-top:56.25%;margin:10px 0;border-radius:10px;overflow:hidden;background:#000}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{border-radius:999px;font-weight:600;padding:4px 12px;border:2px solid transparent}
+.chip.on{border-color:var(--ink)}
+.thumbs{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.thumbs .th{position:relative}
+.thumbs img{height:64px;border-radius:6px;display:block}
+.thumbs .x{position:absolute;top:-6px;right:-6px;border-radius:50%;width:22px;height:22px;padding:0;line-height:1}
+.desc{white-space:pre-wrap}
+a{color:var(--acc)}
+.ghost{position:fixed;z-index:60;pointer-events:none;opacity:.92;box-shadow:var(--shadow);transform:scale(1.08);cursor:grabbing}
+.ins{box-shadow:-4px 0 0 var(--acc)}
+.insE{box-shadow:4px 0 0 var(--acc)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bar">
+    <select id="sel" aria-label="topic"></select>
+    <button id="newL" class="pri"></button>
+    <span class="sp"></span>
+    <button id="lang">EN</button>
+    <button id="theme"></button>
+  </div>
+  <input class="title" id="title" type="text" maxlength="80">
+  <div class="bar">
+    <button id="addI" class="pri"></button>
+    <button id="addT"></button>
+    <span class="sp"></span>
+    <button id="delL" class="dng"></button>
+  </div>
+  <div class="board" id="board"></div>
+  <div class="pool"><h2 id="poolT"></h2><div class="drop" id="pool" data-t="pool"></div><div class="hint" id="hint"></div></div>
+</div>
+<div id="modal"></div>
+<script>
+const TX={th:{topic:"หัวข้อ",newL:"+ หัวข้อใหม่",delL:"ลบหัวข้อนี้",addI:"+ เพิ่มรายการ",addT:"+ เพิ่มเทียร์",pool:"รายการที่ยังไม่จัด",hint:"ลากรายการไปวางในเทียร์ หรือแตะรายการแล้วเลือกเทียร์ (ใช้บนมือถือได้)",name:"ชื่อ",img:"รูปหลัก",desc:"รายละเอียด",vid:"ลิงก์คลิป (YouTube)",gal:"รูปเพิ่มเติม",save:"บันทึก",cancel:"ยกเลิก",del:"ลบ",edit:"แก้ไข",close:"ปิด",moveTo:"ย้ายไปเทียร์",none:"ยังไม่จัด",tname:"ชื่อเทียร์",color:"สี",newName:"หัวข้อใหม่",confirm:"ลบอย่างถาวรใช่ไหม?",openV:"เปิดคลิปในแท็บใหม่",ex:"ตัวอย่าง",unt:"ไม่มีชื่อ",tier:"เทียร์",noDesc:"ยังไม่มีรายละเอียด",up:"ขึ้น",dn:"ลง",pick:"เลือกรูป",addMore:"เพิ่มรูป"},
+en:{topic:"Topic",newL:"+ New topic",delL:"Delete topic",addI:"+ Add item",addT:"+ Add tier",pool:"Unranked items",hint:"Drag items into a tier, or tap an item and pick a tier (works on phones).",name:"Name",img:"Main image",desc:"Details",vid:"Video link (YouTube)",gal:"More images",save:"Save",cancel:"Cancel",del:"Delete",edit:"Edit",close:"Close",moveTo:"Move to tier",none:"Unranked",tname:"Tier name",color:"Color",newName:"New topic",confirm:"Delete permanently?",openV:"Open video in new tab",ex:"Example",unt:"Untitled",tier:"Tier",noDesc:"No details yet.",up:"Up",dn:"Down",pick:"Choose image",addMore:"Add images"}};
+const COL=["#ff7f7f","#ffbf7f","#ffdf7f","#bfff7f","#7fbfff","#c39bff","#ff9bd2"];
+const uid=()=>Math.random().toString(36).slice(2,9);
+const mkTiers=()=>["S","A","B","C","D"].map((l,i)=>({id:uid(),label:l,color:COL[i]}));
+let S;
+function load(){try{const r=localStorage.getItem("tierboard");if(r)S=JSON.parse(r)}catch(e){}
+if(!S||!S.lists||!S.lists.length){const tr=mkTiers();S={lang:"th",theme:matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light",cur:null,lists:[{id:uid(),name:"ตัวอย่าง / Example",tiers:tr,items:["A","B","C","D"].map((n,i)=>({id:uid(),name:"Item "+n,img:"",desc:"",video:"",gal:[],tier:i<2?tr[i].id:null}))}]};S.cur=S.lists[0].id}}
+function save(){try{localStorage.setItem("tierboard",JSON.stringify(S))}catch(e){alert("Storage full — delete some images.")}}
+const L=()=>S.lists.find(l=>l.id===S.cur)||S.lists[0];
+const t=k=>TX[S.lang][k];
+const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const $=id=>document.getElementById(id);
+function ink(h){const n=parseInt(h.slice(1),16),r=n>>16,g=n>>8&255,b=n&255;return (r*299+g*587+b*114)/1000>150?"#111":"#fff"}
+function yt(u){const m=String(u||"").match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/);return m?m[1]:null}
+function tile(it){return `<button class="tile" data-i="${it.id}" title="${esc(it.name)}">${it.img?`<img src="${it.img}" alt="">`:`<span class="ph">${esc(it.name||t("unt"))}</span>`}${it.img?`<span class="nm">${esc(it.name)}</span>`:""}</button>`}
+function render(){
+ document.documentElement.dataset.theme=S.theme;document.documentElement.lang=S.lang;
+ const l=L();S.cur=l.id;
+ $("sel").innerHTML=S.lists.map(x=>`<option value="${x.id}" ${x.id===l.id?"selected":""}>${esc(x.name)}</option>`).join("");
+ $("newL").textContent=t("newL");$("delL").textContent=t("delL");$("addI").textContent=t("addI");$("addT").textContent=t("addT");
+ $("lang").textContent=S.lang==="th"?"EN":"ไทย";$("theme").textContent=S.theme==="dark"?"☀":"☾";
+ $("title").value=l.name;$("poolT").textContent=t("pool");$("hint").textContent=t("hint");
+ $("board").innerHTML=l.tiers.map(r=>`<div class="row"><button class="lab" data-tier="${r.id}" style="background:${r.color};color:${ink(r.color)}">${esc(r.label)}</button><div class="drop" data-t="${r.id}">${l.items.filter(i=>i.tier===r.id).map(tile).join("")}</div></div>`).join("");
+ $("pool").innerHTML=l.items.filter(i=>!l.tiers.some(r=>r.id===i.tier)).map(tile).join("");
+ save();
+}
+function modal(html){$("modal").innerHTML=`<div class="ov" id="ov"><div class="md" role="dialog">${html}</div></div>`;$("ov").onclick=e=>{if(e.target.id==="ov")closeM()}}
+function closeM(){$("modal").innerHTML=""}
+function viewItem(id){
+ const l=L(),it=l.items.find(i=>i.id===id);if(!it)return;
+ const v=yt(it.video);
+ modal(`<h2>${esc(it.name||t("unt"))}</h2>${it.img?`<img class="hero" src="${it.img}" alt="">`:""}
+ <p class="desc">${it.desc?esc(it.desc):`<span class="hint">${t("noDesc")}</span>`}</p>
+ ${v?`<div class="vid"><iframe src="https://www.youtube-nocookie.com/embed/${v}" allowfullscreen loading="lazy" title="video"></iframe></div>`:""}
+ ${it.video?`<a href="${esc(it.video)}" target="_blank" rel="noopener noreferrer">${t("openV")}</a>`:""}
+ ${it.gal.length?`<div class="gal">${it.gal.map(g=>`<img src="${g}" alt="">`).join("")}</div>`:""}
+ <div class="f">${t("moveTo")}</div><div class="chips">
+ <button class="chip ${!l.tiers.some(r=>r.id===it.tier)?"on":""}" data-mv="">${t("none")}</button>
+ ${l.tiers.map(r=>`<button class="chip ${it.tier===r.id?"on":""}" data-mv="${r.id}" style="background:${r.color};color:${ink(r.color)}">${esc(r.label)}</button>`).join("")}</div>
+ <div class="acts"><button class="pri" data-ed="${id}">${t("edit")}</button><span class="sp"></span><button data-x>${t("close")}</button></div>`);
+ $("modal").onclick=e=>{const b=e.target.closest("[data-mv]");if(b){it.tier=b.dataset.mv||null;render();viewItem(id)}
+ if(e.target.closest("[data-x]"))closeM();const ed=e.target.closest("[data-ed]");if(ed)editItem(id);
+ if(e.target.closest(".gal img")){const w=window.open();if(w){w.document.write(`<img src="${e.target.src}" style="max-width:100%">`)}}}
+}
+function readImg(f,max){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const s=Math.min(1,max/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=Math.round(i.width*s);c.height=Math.round(i.height*s);c.getContext("2d").drawImage(i,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.82))};i.src=r.result};r.readAsDataURL(f)})}
+function editItem(id){
+ const l=L();let d=id?JSON.parse(JSON.stringify(l.items.find(i=>i.id===id))):{id:uid(),name:"",img:"",desc:"",video:"",gal:[],tier:null};
+ const sync=()=>{d.name=$("e-n").value;d.desc=$("e-d").value;d.video=$("e-v").value};
+ const draw=()=>{modal(`<h2>${id?t("edit"):t("addI")}</h2>
+ <label class="f" for="e-n">${t("name")}</label><input type="text" id="e-n" maxlength="80" value="${esc(d.name)}">
+ <div class="f">${t("img")}</div>${d.img?`<div class="thumbs"><div class="th"><img src="${d.img}" alt=""><button class="x" data-rm="main">×</button></div></div>`:""}
+ <input type="file" accept="image/*" id="e-i">
+ <label class="f" for="e-d">${t("desc")}</label><textarea id="e-d" rows="5">${esc(d.desc)}</textarea>
+ <label class="f" for="e-v">${t("vid")}</label><input type="url" id="e-v" placeholder="https://youtu.be/..." value="${esc(d.video)}">
+ <div class="f">${t("gal")}</div><div class="thumbs">${d.gal.map((g,i)=>`<div class="th"><img src="${g}" alt=""><button class="x" data-rm="${i}">×</button></div>`).join("")}</div>
+ <input type="file" accept="image/*" multiple id="e-g">
+ <div class="acts"><button class="pri" data-s>${t("save")}</button><button data-x>${t("cancel")}</button><span class="sp"></span>${id?`<button class="dng" data-del>${t("del")}</button>`:""}</div>`);
+ $("e-i").onchange=async e=>{sync();if(e.target.files[0]){d.img=await readImg(e.target.files[0],360)}draw()};
+ $("e-g").onchange=async e=>{sync();for(const f of e.target.files)d.gal.push(await readImg(f,900));draw()};
+ $("modal").onclick=e=>{const rm=e.target.closest("[data-rm]");if(rm){sync();rm.dataset.rm==="main"?d.img="":d.gal.splice(+rm.dataset.rm,1);draw();return}
+ if(e.target.closest("[data-s]")){sync();if(!d.name.trim())d.name=t("unt");const k=l.items.findIndex(i=>i.id===d.id);k<0?l.items.push(d):l.items[k]=d;render();viewItem(d.id)}
+ if(e.target.closest("[data-x]")){id?viewItem(id):closeM()}
+ if(e.target.closest("[data-del]")&&confirm(t("confirm"))){l.items=l.items.filter(i=>i.id!==id);render();closeM()}}};
+ draw();
+}
+function editTier(id){
+ const l=L(),idx=l.tiers.findIndex(r=>r.id===id),r=idx<0?{id:uid(),label:"",color:COL[l.tiers.length%7]}:{...l.tiers[idx]};
+ modal(`<h2>${t("tier")}</h2><label class="f" for="t-n">${t("tname")}</label><input type="text" id="t-n" maxlength="24" value="${esc(r.label)}">
+ <label class="f" for="t-c">${t("color")}</label><input type="color" id="t-c" value="${r.color}" style="width:64px;height:38px">
+ <div class="acts"><button class="pri" data-s>${t("save")}</button><button data-x>${t("cancel")}</button>
+ ${idx>=0?`<button data-up>↑ ${t("up")}</button><button data-dn>↓ ${t("dn")}</button><span class="sp"></span><button class="dng" data-del>${t("del")}</button>`:""}</div>`);
+ $("modal").onclick=e=>{const mv=(o)=>{const j=idx+o;if(j<0||j>=l.tiers.length)return;[l.tiers[idx],l.tiers[j]]=[l.tiers[j],l.tiers[idx]];render();closeM()};
+ if(e.target.closest("[data-s]")){r.label=$("t-n").value;r.color=$("t-c").value;idx<0?l.tiers.push(r):l.tiers[idx]=r;render();closeM()}
+ if(e.target.closest("[data-x]"))closeM();
+ if(e.target.closest("[data-up]"))mv(-1);if(e.target.closest("[data-dn]"))mv(1);
+ if(e.target.closest("[data-del]")&&confirm(t("confirm"))){l.items.forEach(i=>{if(i.tier===id)i.tier=null});l.tiers.splice(idx,1);render();closeM()}}
+}
+$("sel").onchange=e=>{S.cur=e.target.value;render()};
+$("title").oninput=e=>{L().name=e.target.value;save();const o=$("sel").selectedOptions[0];if(o)o.textContent=e.target.value};
+$("newL").onclick=()=>{const l={id:uid(),name:t("newName"),tiers:mkTiers(),items:[]};S.lists.push(l);S.cur=l.id;render();$("title").select()};
+$("delL").onclick=()=>{if(!confirm(t("confirm")))return;S.lists=S.lists.filter(x=>x.id!==S.cur);if(!S.lists.length)S.lists.push({id:uid(),name:t("newName"),tiers:mkTiers(),items:[]});S.cur=S.lists[0].id;render()};
+$("addI").onclick=()=>editItem(null);$("addT").onclick=()=>editTier(null);
+$("lang").onclick=()=>{S.lang=S.lang==="th"?"en":"th";render()};
+$("theme").onclick=()=>{S.theme=S.theme==="dark"?"light":"dark";render()};
+let drag=null;
+document.addEventListener("dragstart",e=>{const b=e.target.closest(".tile");if(b){drag=b.dataset.i;e.dataTransfer.setData("text/plain",drag);e.dataTransfer.effectAllowed="move"}});
+document.addEventListener("dragover",e=>{const z=e.target.closest(".drop");if(z&&drag){e.preventDefault();z.classList.add("over")}});
+document.addEventListener("dragleave",e=>{const z=e.target.closest(".drop");if(z)z.classList.remove("over")});
+document.addEventListener("drop",e=>{const z=e.target.closest(".drop");if(!z||!drag)return;e.preventDefault();const l=L(),it=l.items.find(i=>i.id===drag);if(it){it.tier=z.dataset.t==="pool"?null:z.dataset.t;l.items.splice(l.items.indexOf(it),1);l.items.push(it)}drag=null;render()});
+document.addEventListener("dragend",()=>{drag=null;document.querySelectorAll(".over").forEach(z=>z.classList.remove("over"))});
+document.addEventListener("click",e=>{const b=e.target.closest(".tile");if(b){if(!noClick)viewItem(b.dataset.i);return}const lb=e.target.closest(".lab");if(lb)editTier(lb.dataset.tier)});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeM()});
+let noClick=false;
+document.addEventListener("pointerdown",e=>{
+ const b=e.target.closest(".tile");if(!b||e.button>0)return;
+ const sx=e.clientX,sy=e.clientY,id=b.dataset.i;let g=null,over=null,before=null;
+ const clear=()=>document.querySelectorAll(".over,.ins,.insE").forEach(x=>x.classList.remove("over","ins","insE"));
+ const mv=ev=>{
+  if(!g){if(Math.hypot(ev.clientX-sx,ev.clientY-sy)<8)return;g=b.cloneNode(true);g.className="tile ghost";const r=b.getBoundingClientRect();g.style.width=r.width+"px";g.style.height=r.height+"px";document.body.appendChild(g);b.style.opacity=".3"}
+  ev.preventDefault();
+  g.style.left=ev.clientX-g.offsetWidth/2+"px";g.style.top=ev.clientY-g.offsetHeight/2+"px";
+  clear();over=null;before=null;
+  const el=document.elementFromPoint(ev.clientX,ev.clientY),z=el&&el.closest(".drop");
+  if(z){over=z;z.classList.add("over");
+   const ts=[...z.querySelectorAll(".tile")].filter(x=>x!==b);
+   for(const x of ts){const r=x.getBoundingClientRect();if(ev.clientY<r.top||(ev.clientY<r.bottom&&ev.clientX<r.left+r.width/2)){before=x;break}}
+   if(before)before.classList.add("ins");else if(ts.length)ts[ts.length-1].classList.add("insE");
+  }
+ };
+ const up=ev=>{
+  removeEventListener("pointermove",mv);removeEventListener("pointerup",up);removeEventListener("pointercancel",up);
+  if(!g)return;
+  noClick=true;setTimeout(()=>noClick=false,60);
+  g.remove();clear();b.style.opacity="";
+  if(over&&ev.type==="pointerup"){const l=L(),it=l.items.find(i=>i.id===id);l.items.splice(l.items.indexOf(it),1);it.tier=over.dataset.t==="pool"?null:over.dataset.t;
+   const k=before?l.items.findIndex(i=>i.id===before.dataset.i):-1;k<0?l.items.push(it):l.items.splice(k,0,it);render()}
+ };
+ addEventListener("pointermove",mv,{passive:false});addEventListener("pointerup",up);addEventListener("pointercancel",up);
+});
+load();render();
+</script>
+</body>
+</html>
