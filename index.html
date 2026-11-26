@@ -7,10 +7,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&family=Noto+Sans+Thai:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#eef0f3;--panel:#fff;--ink:#1a1d23;--mute:#667085;--line:#d5d9e0;--acc:#2f5bea;--accink:#fff;--shadow:0 6px 24px rgba(20,30,60,.14);color-scheme:light;
+:root{--bg:#eef0f3;--panel:#fff;--ink:#1a1d23;--mute:#667085;--line:#d5d9e0;--acc:#2f5bea;--accink:#fff;--shadow:0 6px 24px rgba(20,30,60,.14);--bd:#1a1d23;--cell:#fff;color-scheme:light;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171c;--panel:#1e232b;--ink:#eceff4;--mute:#9aa4b2;--line:#323946;--acc:#7b9bff;--accink:#10131a;--shadow:0 6px 24px rgba(0,0,0,.5);color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#14171c;--panel:#1e232b;--ink:#eceff4;--mute:#9aa4b2;--line:#323946;--acc:#7b9bff;--accink:#10131a;--shadow:0 6px 24px rgba(0,0,0,.5);color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171c;--panel:#1e232b;--ink:#eceff4;--mute:#9aa4b2;--line:#323946;--acc:#7b9bff;--accink:#10131a;--shadow:0 6px 24px rgba(0,0,0,.5);--bd:#000;--cell:#2b3038;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14171c;--panel:#1e232b;--ink:#eceff4;--mute:#9aa4b2;--line:#323946;--acc:#7b9bff;--accink:#10131a;--shadow:0 6px 24px rgba(0,0,0,.5);--bd:#000;--cell:#2b3038;color-scheme:dark}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Noto Sans Thai",system-ui,sans-serif}
@@ -27,10 +27,10 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 select,input[type=text],input[type=url],textarea{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 10px;width:100%}
 .bar select{width:auto;max-width:48vw}
 .title{width:100%;font:700 clamp(24px,5vw,36px)/1.2 Kanit,sans-serif;background:transparent;border:0;border-bottom:2px dashed var(--line);border-radius:0;padding:6px 0;margin-bottom:12px}
-.board{border:2px solid var(--ink);border-radius:10px;overflow:hidden;background:var(--panel)}
-.row{display:flex;border-bottom:2px solid var(--ink);min-height:calc(var(--th,76px) + 8px)}
+.board{border:2px solid var(--bd);border-radius:0;overflow:hidden;background:var(--cell)}
+.row{display:flex;border-bottom:2px solid var(--bd);min-height:calc(var(--th,76px) + 8px)}
 .row:last-child{border-bottom:0}
-.lab{width:88px;flex:none;display:flex;align-items:center;justify-content:center;text-align:center;font:700 22px/1.1 Kanit,sans-serif;padding:6px;cursor:pointer;word-break:break-word;border:0;border-radius:0}
+.lab{width:calc(var(--th,76px) + 8px);flex:none;display:flex;align-items:center;justify-content:center;text-align:center;font:500 15px/1.2 Kanit,sans-serif;padding:4px;cursor:pointer;word-break:break-word;border:0;border-right:2px solid var(--bd);border-radius:0}
 .drop{flex:1;display:flex;flex-wrap:wrap;gap:4px;padding:4px;align-content:flex-start;min-height:calc(var(--th,76px) + 8px)}
 .drop.over{background:color-mix(in srgb,var(--acc) 18%,transparent)}
 .tile{width:var(--tw,76px);height:var(--th,76px);border-radius:var(--tr,6px);overflow:hidden;position:relative;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;border:1px solid var(--line);background:var(--bg);padding:0;flex:none}
@@ -101,6 +101,7 @@ a{color:var(--acc)}
     <button id="addT"></button>
     <button id="cov"></button>
     <button id="sz"></button>
+    <button id="shot"></button>
     <button id="pub" class="pri"></button>
     <button id="unpub" hidden></button>
     <button id="lang">EN</button>
@@ -110,8 +111,8 @@ a{color:var(--acc)}
 </div>
 <div id="modal"></div>
 <script>
-const TX={th:{topic:"หัวข้อ",newL:"+ หัวข้อใหม่",delL:"ลบหัวข้อนี้",addI:"+ เพิ่มรายการ",addT:"+ เพิ่มเทียร์",pool:"รายการที่ยังไม่จัด",hint:"ลากรายการไปวางในเทียร์ หรือแตะรายการแล้วเลือกเทียร์ (ใช้บนมือถือได้)",name:"ชื่อ",img:"รูปหลัก",desc:"รายละเอียด",vid:"ลิงก์คลิป (YouTube)",gal:"รูปเพิ่มเติม",save:"บันทึก",cancel:"ยกเลิก",del:"ลบ",edit:"แก้ไข",close:"ปิด",moveTo:"ย้ายไปเทียร์",none:"ยังไม่จัด",tname:"ชื่อเทียร์",color:"สี",newName:"หัวข้อใหม่",confirm:"ลบอย่างถาวรใช่ไหม?",openV:"เปิดคลิปในแท็บใหม่",ex:"ตัวอย่าง",unt:"ไม่มีชื่อ",tier:"เทียร์",noDesc:"ยังไม่มีรายละเอียด",up:"ขึ้น",dn:"ลง",pick:"เลือกรูป",addMore:"เพิ่มรูป",img2:"🖼 บันทึกเป็นรูป",bak:"💾 สำรองข้อมูล",rst:"📂 โหลดข้อมูลสำรอง",restoreQ:"แทนที่ข้อมูลปัจจุบันทั้งหมดด้วยไฟล์นี้ใช่ไหม?",badFile:"ไฟล์ไม่ถูกต้อง",hT:"สร้างเทียร์ลิสต์ของคุณ",hS:"จัดอันดับอะไรก็ได้ ใส่รูป คลิป และรายละเอียดได้",mk:"+ สร้างเทียร์ใหม่",recT:"แนะนำ (แตะเพื่อใช้เทมเพลต)",mine:"ของฉัน",itemsN:"รายการ",back:"← หน้าหลัก",pubBtn:"🚀 เผยแพร่",pubUp:"🚀 อัปเดตที่เผยแพร่",unpubBtn:"ยกเลิกเผยแพร่",pubDone:"เผยแพร่แล้ว ไปดูที่หน้าหลักได้เลย",unpubDone:"ยกเลิกเผยแพร่แล้ว",pubd:"เผยแพร่แล้ว",cov:"🖼 รูปปก",sz:"📐 ขนาด",szT:"ขนาดรายการ",s_sq:"สี่เหลี่ยมจัตุรัส",s_poster:"โปสเตอร์หนัง (A4)",s_wide:"แนวนอน 16:9",s_circle:"วงกลม",covHint:"เลือกรูปปกของเทียร์นี้ จะแสดงที่หน้าหลัก (กดเผยแพร่อีกครั้งเพื่ออัปเดต)"},
-en:{topic:"Topic",newL:"+ New topic",delL:"Delete topic",addI:"+ Add item",addT:"+ Add tier",pool:"Unranked items",hint:"Drag items into a tier, or tap an item and pick a tier (works on phones).",name:"Name",img:"Main image",desc:"Details",vid:"Video link (YouTube)",gal:"More images",save:"Save",cancel:"Cancel",del:"Delete",edit:"Edit",close:"Close",moveTo:"Move to tier",none:"Unranked",tname:"Tier name",color:"Color",newName:"New topic",confirm:"Delete permanently?",openV:"Open video in new tab",ex:"Example",unt:"Untitled",tier:"Tier",noDesc:"No details yet.",up:"Up",dn:"Down",pick:"Choose image",addMore:"Add images",img2:"🖼 Save as image",bak:"💾 Backup data",rst:"📂 Restore backup",restoreQ:"Replace all current data with this file?",badFile:"Invalid file",hT:"Make your own tier list",hS:"Rank anything. Add images, videos and details.",mk:"+ Create tier list",recT:"Recommended (tap to use a template)",mine:"My tier lists",itemsN:"items",back:"← Home",pubBtn:"🚀 Publish",pubUp:"🚀 Update published",unpubBtn:"Unpublish",pubDone:"Published! See it on the home page.",unpubDone:"Unpublished",pubd:"Published",cov:"🖼 Cover",sz:"📐 Size",szT:"Item size",s_sq:"Square",s_poster:"Movie poster (A4)",s_wide:"Wide 16:9",s_circle:"Circle",covHint:"Pick a cover for this tier list. It shows on the home page (press Publish again to update)."}};
+const TX={th:{topic:"หัวข้อ",newL:"+ หัวข้อใหม่",delL:"ลบหัวข้อนี้",addI:"+ เพิ่มรายการ",addT:"+ เพิ่มเทียร์",pool:"รายการที่ยังไม่จัด",hint:"ลากรายการไปวางในเทียร์ หรือแตะรายการแล้วเลือกเทียร์ (ใช้บนมือถือได้)",name:"ชื่อ",img:"รูปหลัก",desc:"รายละเอียด",vid:"ลิงก์คลิป (YouTube)",gal:"รูปเพิ่มเติม",save:"บันทึก",cancel:"ยกเลิก",del:"ลบ",edit:"แก้ไข",close:"ปิด",moveTo:"ย้ายไปเทียร์",none:"ยังไม่จัด",tname:"ชื่อเทียร์",color:"สี",newName:"หัวข้อใหม่",confirm:"ลบอย่างถาวรใช่ไหม?",openV:"เปิดคลิปในแท็บใหม่",ex:"ตัวอย่าง",unt:"ไม่มีชื่อ",tier:"เทียร์",noDesc:"ยังไม่มีรายละเอียด",up:"ขึ้น",dn:"ลง",pick:"เลือกรูป",addMore:"เพิ่มรูป",img2:"🖼 บันทึกเป็นรูป",bak:"💾 สำรองข้อมูล",rst:"📂 โหลดข้อมูลสำรอง",restoreQ:"แทนที่ข้อมูลปัจจุบันทั้งหมดด้วยไฟล์นี้ใช่ไหม?",badFile:"ไฟล์ไม่ถูกต้อง",hT:"สร้างเทียร์ลิสต์ของคุณ",hS:"จัดอันดับอะไรก็ได้ ใส่รูป คลิป และรายละเอียดได้",mk:"+ สร้างเทียร์ใหม่",recT:"แนะนำ (แตะเพื่อใช้เทมเพลต)",mine:"ของฉัน",itemsN:"รายการ",back:"← หน้าหลัก",pubBtn:"🚀 เผยแพร่",pubUp:"🚀 อัปเดตที่เผยแพร่",unpubBtn:"ยกเลิกเผยแพร่",pubDone:"เผยแพร่แล้ว ไปดูที่หน้าหลักได้เลย",unpubDone:"ยกเลิกเผยแพร่แล้ว",pubd:"เผยแพร่แล้ว",cov:"🖼 รูปปก",sz:"📐 ขนาด",szT:"ขนาดรายการ",s_sq:"สี่เหลี่ยมจัตุรัส",s_poster:"โปสเตอร์หนัง (A4)",s_wide:"แนวนอน 16:9",s_circle:"วงกลม",shot:"📷 บันทึกรูป",shotT:"บันทึกเป็นรูป",m_board:"ปกติ (เฉพาะตารางเทียร์)",m_story:"สตอรี่ IG (9:16)",m_wide:"แนวนอน (16:9)",covHint:"เลือกรูปปกของเทียร์นี้ จะแสดงที่หน้าหลัก (กดเผยแพร่อีกครั้งเพื่ออัปเดต)"},
+en:{topic:"Topic",newL:"+ New topic",delL:"Delete topic",addI:"+ Add item",addT:"+ Add tier",pool:"Unranked items",hint:"Drag items into a tier, or tap an item and pick a tier (works on phones).",name:"Name",img:"Main image",desc:"Details",vid:"Video link (YouTube)",gal:"More images",save:"Save",cancel:"Cancel",del:"Delete",edit:"Edit",close:"Close",moveTo:"Move to tier",none:"Unranked",tname:"Tier name",color:"Color",newName:"New topic",confirm:"Delete permanently?",openV:"Open video in new tab",ex:"Example",unt:"Untitled",tier:"Tier",noDesc:"No details yet.",up:"Up",dn:"Down",pick:"Choose image",addMore:"Add images",img2:"🖼 Save as image",bak:"💾 Backup data",rst:"📂 Restore backup",restoreQ:"Replace all current data with this file?",badFile:"Invalid file",hT:"Make your own tier list",hS:"Rank anything. Add images, videos and details.",mk:"+ Create tier list",recT:"Recommended (tap to use a template)",mine:"My tier lists",itemsN:"items",back:"← Home",pubBtn:"🚀 Publish",pubUp:"🚀 Update published",unpubBtn:"Unpublish",pubDone:"Published! See it on the home page.",unpubDone:"Unpublished",pubd:"Published",cov:"🖼 Cover",sz:"📐 Size",szT:"Item size",s_sq:"Square",s_poster:"Movie poster (A4)",s_wide:"Wide 16:9",s_circle:"Circle",shot:"📷 Save image",shotT:"Save as image",m_board:"Normal (tier board only)",m_story:"IG story (9:16)",m_wide:"Landscape (16:9)",covHint:"Pick a cover for this tier list. It shows on the home page (press Publish again to update)."}};
 const COL=["#ff7f7f","#ffbf7f","#ffdf7f","#bfff7f","#7fbfff","#c39bff","#ff9bd2"];
 const uid=()=>Math.random().toString(36).slice(2,9);
 const mkTiers=()=>["S","A","B","C","D"].map((l,i)=>({id:uid(),label:l,color:COL[i]}));
@@ -132,7 +133,7 @@ function render(){
  $("home").hidden=true;$("ed").hidden=false;$("back").textContent=t("back");
  const l=L();S.cur=l.id;
  $("sel").innerHTML=S.lists.map(x=>`<option value="${x.id}" ${x.id===l.id?"selected":""}>${esc(x.name)}</option>`).join("");
- $("newL").textContent=t("newL");$("delL").textContent=t("delL");$("addI").textContent=t("addI");$("addT").textContent=t("addT");$("cov").textContent=t("cov");$("sz").textContent=t("sz");setSz(l);const pb=(S.pub||[]).some(p=>p.id===l.id);$("pub").textContent=pb?t("pubUp"):t("pubBtn");$("unpub").textContent=t("unpubBtn");$("unpub").hidden=!pb;
+ $("newL").textContent=t("newL");$("delL").textContent=t("delL");$("addI").textContent=t("addI");$("addT").textContent=t("addT");$("cov").textContent=t("cov");$("sz").textContent=t("sz");$("shot").textContent=t("shot");setSz(l);const pb=(S.pub||[]).some(p=>p.id===l.id);$("pub").textContent=pb?t("pubUp"):t("pubBtn");$("unpub").textContent=t("unpubBtn");$("unpub").hidden=!pb;
  $("lang").textContent=S.lang==="th"?"EN":"ไทย";$("theme").textContent=S.theme==="dark"?"☀":"☾";
  $("title").value=l.name;$("poolT").textContent=t("pool");$("hint").textContent=t("hint");
  $("board").innerHTML=l.tiers.map(r=>`<div class="row"><button class="lab" data-tier="${r.id}" style="background:${r.color};color:${ink(r.color)}">${esc(r.label)}</button><div class="drop" data-t="${r.id}">${l.items.filter(i=>i.tier===r.id).map(tile).join("")}</div></div>`).join("");
@@ -235,11 +236,40 @@ function editCover(){const l=L();let d=l.cover||"";
   $("modal").onclick=e=>{if(e.target.closest("[data-rm]")){d="";draw();return}if(e.target.closest("[data-s]")){l.cover=d;render();closeM()}if(e.target.closest("[data-x]"))closeM()}};
  draw()}
 $("cov").onclick=editCover;
-const SZ={sq:[76,76,6],poster:[66,93,6],wide:[120,68,6],circle:[76,76,50]};
+const SZ={sq:[76,76,0],poster:[66,93,0],wide:[120,68,0],circle:[76,76,50]};
 function setSz(l){const z=SZ[l.size]||SZ.sq,r=document.documentElement.style;r.setProperty("--tw",z[0]+"px");r.setProperty("--th",z[1]+"px");r.setProperty("--tr",z[2]===50?"50%":z[2]+"px")}
 function editSize(){const l=L();modal(`<h2>${t("szT")}</h2><div class="chips">${Object.keys(SZ).map(k=>`<button class="chip ${(l.size||"sq")===k?"on":""}" data-sz="${k}"><span style="display:inline-block;width:${SZ[k][0]/6}px;height:${SZ[k][1]/6}px;border:2px solid currentColor;border-radius:${SZ[k][2]===50?"50%":"2px"};vertical-align:middle;margin-right:8px"></span>${t("s_"+k)}</button>`).join("")}</div><div class="acts"><button data-x>${t("close")}</button></div>`);
  $("modal").onclick=e=>{const b=e.target.closest("[data-sz]");if(b){l.size=b.dataset.sz;render();closeM()}if(e.target.closest("[data-x]"))closeM()}}
 $("sz").onclick=editSize;
+function layout(l,W,k){const z=SZ[l.size]||SZ.sq,tw=z[0]*k,th=z[1]*k,g=4*k,LW=(z[1]+8)*k,per=Math.max(1,Math.floor((W-LW-g)/(tw+g)));const rows=l.tiers.map(r=>{const its=l.items.filter(i=>i.tier===r.id);return{r,its,h:Math.max(LW,Math.ceil(its.length/per)*(th+g)+g)}});return{z,tw,th,g,LW,per,rows,H:rows.reduce((a,o)=>a+o.h,0)}}
+async function drawBoard(x,l,ox,oy,W,k,C){
+ const o=layout(l,W,k);x.fillStyle=C.cell;x.fillRect(ox,oy,W,o.H);let y=oy;
+ for(const {r,its,h} of o.rows){
+  x.fillStyle=r.color;x.fillRect(ox,y,o.LW,h);
+  x.fillStyle=ink(r.color);x.font=`500 ${15*k}px Kanit,sans-serif`;x.textAlign="center";x.textBaseline="middle";x.fillText(r.label,ox+o.LW/2,y+h/2,o.LW-8*k);
+  for(let i=0;i<its.length;i++){const it=its[i],px=ox+o.LW+o.g+(i%o.per)*(o.tw+o.g),py=y+o.g+Math.floor(i/o.per)*(o.th+o.g),im=it.img?await loadImg(it.img):null;
+   x.save();x.beginPath();if(o.z[2]===50)x.arc(px+o.tw/2,py+o.th/2,o.tw/2,0,7);else x.rect(px,py,o.tw,o.th);x.clip();
+   if(im){const s=Math.max(o.tw/im.width,o.th/im.height),w=im.width*s,hh=im.height*s;x.drawImage(im,px+(o.tw-w)/2,py+(o.th-hh)/2,w,hh);x.fillStyle="rgba(0,0,0,.62)";x.fillRect(px,py+o.th-17*k,o.tw,17*k);x.fillStyle="#fff";x.font=`${11*k}px 'Noto Sans Thai',sans-serif`;x.fillText(it.name,px+o.tw/2,py+o.th-8.5*k,o.tw-6*k)}
+   else{x.fillStyle=C.ph;x.fillRect(px,py,o.tw,o.th);x.fillStyle=C.ink;x.font=`600 ${12*k}px Kanit,sans-serif`;x.fillText(it.name,px+o.tw/2,py+o.th/2,o.tw-6*k)}
+   x.restore()}
+  y+=h;x.fillStyle=C.bd;x.fillRect(ox,y-k,W,2*k)}
+ x.fillStyle=C.bd;x.fillRect(ox+o.LW-k,oy,2*k,o.H);x.fillRect(ox,oy,W,2*k);x.fillRect(ox,oy,2*k,o.H);x.fillRect(ox+W-2*k,oy,2*k,o.H);
+}
+async function exportImg(mode){
+ await document.fonts.ready;
+ const l=L(),cs=getComputedStyle(document.documentElement),g=n=>cs.getPropertyValue(n).trim(),C={bg:g("--bg"),cell:g("--cell"),bd:g("--bd"),ink:g("--ink"),ph:S.theme==="dark"?"#3a3f48":"#e3e6ec"};
+ const c=document.createElement("canvas"),x=c.getContext("2d");let k,W,oy,ox=0;
+ const fit=(bw,maxH,k0)=>{let k=k0;while(k>0.3&&layout(l,bw,k).H>maxH)k-=0.05;return k};
+ if(mode==="board"){W=1200;k=1.5;c.width=W;c.height=Math.ceil(layout(l,W,k).H);await drawBoard(x,l,0,0,W,k,C)}
+ else{const st=mode==="story";c.width=st?1080:1920;c.height=st?1920:1080;x.fillStyle=C.bg;x.fillRect(0,0,c.width,c.height);
+  x.fillStyle=C.ink;x.textBaseline="middle";x.font=`700 ${st?64:54}px Kanit,sans-serif`;
+  W=st?1000:1760;ox=(c.width-W)/2;oy=st?240:170;x.textAlign=st?"center":"left";x.fillText(l.name,st?c.width/2:ox,st?130:85,W);
+  const room=c.height-oy-(st?120:60);k=fit(W,room,st?1.8:2.4);if(st)oy+=Math.max(0,(room-layout(l,W,k).H)/2);
+  await drawBoard(x,l,ox,oy,W,k,C)}
+ c.toBlob(b=>dl(b,(l.name||"tierlist")+"-"+mode+".png"),"image/png")}
+function editShot(){modal(`<h2>${t("shotT")}</h2><div class="acts" style="flex-direction:column;align-items:stretch">${["board","story","wide"].map(m=>`<button data-m="${m}">${t("m_"+m)}</button>`).join("")}</div><div class="acts"><button data-x>${t("close")}</button></div>`);
+ $("modal").onclick=e=>{const b=e.target.closest("[data-m]");if(b){closeM();exportImg(b.dataset.m)}if(e.target.closest("[data-x]"))closeM()}}
+$("shot").onclick=editShot;
 function toast(m){const d=document.createElement("div");d.className="toast";d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),2400)}
 function publish(){const l=L(),snap=JSON.parse(JSON.stringify(l));S.pub=S.pub||[];const k=S.pub.findIndex(p=>p.id===l.id);k<0?S.pub.unshift(snap):S.pub[k]=snap;render();toast(t("pubDone"))}
 function unpublish(){S.pub=(S.pub||[]).filter(p=>p.id!==L().id);render();toast(t("unpubDone"))}
